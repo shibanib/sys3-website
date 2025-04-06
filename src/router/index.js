@@ -7,6 +7,7 @@ import Education from '@/views/Education.vue';
 import Consultancy from '@/views/Consultancy.vue';
 import Contact from '@/views/Contact.vue';
 import NotFound from '@/views/NotFound.vue';
+import ComingSoon from '@/views/ComingSoon.vue';
 
 // Course pages
 import Courses from '@/views/Courses/Courses.vue';
@@ -36,6 +37,12 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: { title: 'System3 - AI Education and Consulting' }
+  },
+  {
+    path: '/coming-soon',
+    name: 'ComingSoon',
+    component: ComingSoon,
+    meta: { title: 'Coming Soon - System3' }
   },
   {
     path: '/about',

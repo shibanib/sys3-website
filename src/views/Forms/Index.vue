@@ -5,7 +5,7 @@
       <div class="section-overlay"></div>
       <div class="hero-content">
         <h1>System3 <span class="gradient-text">Forms</span></h1>
-        <p>Access our specialized forms for various programs and activities.</p>
+        <p>Access our forms for various programs and activities.</p>
       </div>
     </section>
 

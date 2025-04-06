@@ -146,12 +146,30 @@ export const initCardAnimations = (selector = '.card, .education-card, .consulti
     ...performanceProps
   });
   
-  // Use ScrollTrigger.batch for better performance with refined timing
-  ScrollTrigger.batch(cards, {
-    interval: config.interval,
-    batchMax: config.batchMax,
-    onEnter: batch => {
-      gsap.to(batch, {
+  // Check if we have any cards before proceeding
+  if (cards.length > 0) {
+    // Use ScrollTrigger.batch for better performance with refined timing
+    try {
+      ScrollTrigger.batch(cards, {
+        interval: config.interval,
+        batchMax: config.batchMax,
+        onEnter: batch => {
+          gsap.to(batch, {
+            y: 0,
+            opacity: 1,
+            stagger: config.stagger,
+            duration: config.duration,
+            ease: config.ease,
+            overwrite: true,
+            clearProps: "willChange,backfaceVisibility"
+          });
+        },
+        start: config.start
+      });
+    } catch (error) {
+      console.log('Animation error prevented:', error.message);
+      // Fallback animation without ScrollTrigger
+      gsap.to(cards, {
         y: 0,
         opacity: 1,
         stagger: config.stagger,
@@ -160,9 +178,8 @@ export const initCardAnimations = (selector = '.card, .education-card, .consulti
         overwrite: true,
         clearProps: "willChange,backfaceVisibility"
       });
-    },
-    start: config.start
-  });
+    }
+  }
   
   // Add professional hover animations to cards
   cards.forEach(card => {

@@ -1,6 +1,6 @@
 <template>
   <course-template
-    courseTitle="Data Science"
+    courseTitle="Bedrock Data Science"
     heroImage="/public/data-science-hero.jpg"
     heroTagline="Build a comprehensive foundation in programming, statistics, and mathematics for advanced data science and machine learning."
     overviewTitle="Advanced Data Science"

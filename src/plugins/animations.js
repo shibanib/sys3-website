@@ -26,39 +26,50 @@ export const AnimationsPlugin = {
       mounted() {
         // Only apply to top-level components (pages) to avoid duplicate animations
         if (this.$parent?.$root === this.$root) {
-          // Reset the flag when a new page is loaded
+          // Check if we should skip animations for this page
+          const routePath = this.$route?.path || '';
+          if (routePath.includes('/coming-soon')) {
+            window.animationsInitialized = true;
+            return;
+          }
+          
+          // Reset the flag when a new page is loaded (except coming soon)
           window.animationsInitialized = false;
           
-          // Use a larger delay to ensure DOM is fully rendered and stable
-          setTimeout(() => {
-            if (!window.animationsInitialized) {
-              console.log('Initializing animations for page:', this.$route?.path);
-              initPageAnimations({
-                // Default options that can be overridden by individual pages
-                heroSelector: '#hero-section, .hero, [id$="-hero"]',
-                sectionSelector: '.section',
-                cardSelector: '.card, .form-card, .education-card, .team-card, .consulting-card'
-              });
-              window.animationsInitialized = true;
-            }
-          }, 150); // Increased timeout to ensure stable DOM
+          // Initialize immediately to avoid flicker, but only if not already initialized
+          if (!window.animationsInitialized) {
+            console.log('Initializing animations for page:', routePath);
+            initPageAnimations({
+              // Default options that can be overridden by individual pages
+              heroSelector: '#hero-section, .hero, [id$="-hero"]',
+              sectionSelector: '.section',
+              cardSelector: '.card, .form-card, .education-card, .team-card, .consulting-card'
+            });
+            window.animationsInitialized = true;
+          }
         }
       },
       
       // Add activation when component is reused in router views
       activated() {
         if (this.$parent?.$root === this.$root) {
-          setTimeout(() => {
-            if (!window.animationsInitialized) {
-              console.log('Reinitializing animations on activation for:', this.$route?.path);
-              initPageAnimations({
-                heroSelector: '#hero-section, .hero, [id$="-hero"]',
-                sectionSelector: '.section',
-                cardSelector: '.card, .form-card, .education-card, .team-card, .consulting-card'
-              });
-              window.animationsInitialized = true;
-            }
-          }, 150);
+          // Skip animations for coming soon page
+          const routePath = this.$route?.path || '';
+          if (routePath.includes('/coming-soon')) {
+            window.animationsInitialized = true;
+            return;
+          }
+          
+          // For other pages, check if animations need to be initialized
+          if (!window.animationsInitialized) {
+            console.log('Reinitializing animations on activation for:', routePath);
+            initPageAnimations({
+              heroSelector: '#hero-section, .hero, [id$="-hero"]',
+              sectionSelector: '.section',
+              cardSelector: '.card, .form-card, .education-card, .team-card, .consulting-card'
+            });
+            window.animationsInitialized = true;
+          }
         }
       }
     });

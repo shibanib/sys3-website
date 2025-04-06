@@ -28,31 +28,33 @@ const isDarkTheme = ref(false);
 const showScrollIndicator = ref(false);
 const route = useRoute();
 
-// Check if current page is a form page to hide the explore indicator
+// Check if current page is a form page or coming soon to hide the explore indicator
 const isFormPage = computed(() => {
-  return route.path.includes('/forms/');
+  return route.path.includes('/forms/') || route.path.includes('/coming-soon');
 });
 
 // Handle route transitions and ensure animations are properly initialized
 const handleRouteEnter = () => {
   console.log('Route transition completed for:', route.path);
   
+  // Skip animation for coming soon page to prevent flicker
+  if (route.path.includes('/coming-soon')) {
+    window.animationsInitialized = true;
+    return;
+  }
+  
   // Force reinitialization of animations on route change
-  if (window.initPageAnimations) {
-    window.animationsInitialized = false;
-    
-    // Use a short delay to ensure the DOM is stable
-    setTimeout(() => {
-      // Import initPageAnimations dynamically to avoid circular imports
-      import('@/utils/animations').then(animations => {
-        animations.initPageAnimations({
-          heroSelector: '#hero-section, .hero, [id$="-hero"]',
-          sectionSelector: '.section',
-          cardSelector: '.card, .form-card, .education-card, .team-card, .consulting-card'
-        });
-        window.animationsInitialized = true;
+  if (window.initPageAnimations && !window.animationsInitialized) {
+    // Load animations only once per page view
+    // Import initPageAnimations dynamically to avoid circular imports
+    import('@/utils/animations').then(animations => {
+      animations.initPageAnimations({
+        heroSelector: '#hero-section, .hero, [id$="-hero"]',
+        sectionSelector: '.section',
+        cardSelector: '.card, .form-card, .education-card, .team-card, .consulting-card'
       });
-    }, 50);
+      window.animationsInitialized = true;
+    });
   }
 };
 
