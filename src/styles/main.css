@@ -1122,6 +1122,10 @@ a:hover, button:hover {
   .hero-text-column {
     padding: 0 1rem;
   }
+  
+  .mobile-hero-padding {
+    padding-top: calc(var(--header-height) + 2rem); /* Add extra padding on mobile to prevent header overlap */
+  }
 }
 
 .split-section {

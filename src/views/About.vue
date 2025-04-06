@@ -1,10 +1,12 @@
 <template>
   <div class="content">
     <!-- Hero Section -->
-    <section id="about-hero" class="section hero-section">
-      <div class="hero-content">
-        <h1>About <span class="gradient-text">System3</span></h1>
-        <p>Setting the global standard in AI education and driving innovation with world-class solutions</p>
+    <section id="about-hero" class="section hero mobile-hero-padding">
+      <div class="section-content">
+        <div class="hero-content">
+          <h1>About <span class="gradient-text">System3</span></h1>
+          <p>Setting the global standard in AI education and driving innovation with world-class solutions</p>
+        </div>
       </div>
     </section>
     
@@ -123,11 +125,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import SectionTitle from '@/components/SectionTitle.vue';
 import SplitSection from '@/components/SplitSection.vue';
-import { initSectionAnimations, initCardAnimations } from '@/utils/animations';
-import { gsap } from 'gsap';
 
 // Import images
 import aboutIllustration from '@/assets/images/about-illustration.svg';
@@ -301,81 +301,36 @@ const teamMembers = ref([
 ]);
 
 onMounted(() => {
-  // Initialize other animations
-  initSectionAnimations('.section:not(#about-hero)');
-  initCardAnimations('.value-card, .team-leader, .team-member');
+  // Style Core Values section background
+  const coreValuesSection = document.getElementById('core-values-section');
+  if (coreValuesSection) {
+    const isDarkTheme = document.documentElement.classList.contains('dark-theme');
+    coreValuesSection.style.backgroundColor = isDarkTheme ? '#121212' : '#f8f9fa';
+  }
   
-  // Use a direct approach to fix the theme backgrounds
-  const fixThemeStyles = () => {
-    // Get the current theme by checking computed styles 
-    // instead of relying on the attribute which might be unreliable
-    const computedBg = window.getComputedStyle(document.body).backgroundColor;
-    console.log('Computed body background:', computedBg);
-    
-    // Light backgrounds are generally rgb values > 200
-    // Dark backgrounds are < 50
-    const rgbValues = computedBg.match(/\d+/g);
-    const isLightTheme = rgbValues && 
-      (parseInt(rgbValues[0]) > 200 || parseInt(rgbValues[1]) > 200 || parseInt(rgbValues[2]) > 200);
-    
-    console.log('Detected theme is:', isLightTheme ? 'light' : 'dark');
-    
-    // Get the section element
-    const coreValuesSection = document.getElementById('core-values-section');
-    if (!coreValuesSection) return;
-    
-    // Clear any existing inline styles first
-    coreValuesSection.removeAttribute('style');
-    
-    // Apply the correct styles based on computed theme
-    if (isLightTheme) {
-      // Light theme
-      coreValuesSection.style.setProperty('background-color', '#f8f9fa', 'important');
-      coreValuesSection.style.setProperty('background', '#f8f9fa', 'important');
-    } else {
-      // Dark theme
-      coreValuesSection.style.setProperty('background-color', '#121212', 'important');
-      coreValuesSection.style.setProperty('background', '#121212', 'important');
-    }
-  };
-  
-  // Apply styles immediately
-  fixThemeStyles();
-  
-  // Apply again after a delay to catch any theme changes
-  setTimeout(fixThemeStyles, 100);
-  
-  // Set up an event listener for theme toggle button clicks
-  document.addEventListener('click', (e) => {
-    // Check if the clicked element or its parent is a theme toggle
-    const target = e.target.closest('.theme-toggle');
-    if (target) {
-      // Delay to allow the theme change to take effect
-      setTimeout(fixThemeStyles, 50);
-    }
+  // Simple approach - make all content visible
+  document.querySelectorAll('.section').forEach(section => {
+    section.classList.add('active');
   });
   
-  // Also observe theme changes directly on the HTML element
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach(mutation => {
-      if (mutation.attributeName === 'data-theme') {
-        console.log('Theme changed detected!');
-        fixThemeStyles();
-      }
-    });
+  // Make grids visible
+  document.querySelectorAll('.values-grid, .team-leaders, .team-grid').forEach(grid => {
+    grid.style.visibility = 'visible';
+    grid.style.opacity = '1';
+    grid.style.display = 'grid';
   });
   
-  observer.observe(document.documentElement, { attributes: true });
-  
-  // Wait for next tick to ensure DOM is fully rendered and ensure hero animation works
-  setTimeout(() => {
-    const heroContent = document.querySelector('#about-hero .hero-content');
-    if (heroContent) {
-      // Force the hero content to be visible immediately
-      heroContent.style.opacity = '1';
-      heroContent.style.transform = 'translateY(0)';
-    }
-  }, 100);
+  // Make cards visible
+  document.querySelectorAll('.value-card, .team-leader, .team-member').forEach(card => {
+    card.style.visibility = 'visible';
+    card.style.opacity = '1';
+    card.style.transform = 'translateY(0)';
+  });
+});
+
+// Simple cleanup to match other pages
+onBeforeUnmount(() => {
+  console.log('About page unmounting');
 });
 </script>
 
@@ -390,6 +345,7 @@ onMounted(() => {
   overflow: hidden;
   background-size: cover;
   background-position: center;
+  width: 100%;
 }
 
 #about-hero::before {
@@ -420,9 +376,9 @@ onMounted(() => {
   padding: 0 2rem;
   position: relative;
   z-index: 15;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  margin: 0 auto;
+  opacity: 1; /* Make sure content is always visible */
+  transform: translateY(0); /* No initial transform */
 }
 
 .hero-content h1 {
@@ -469,6 +425,12 @@ onMounted(() => {
   color: var(--color-text-secondary);
 }
 
+@media (max-width: 768px) {
+  #vision-section .section-content {
+    padding: 0 1.5rem; /* Add horizontal padding for mobile */
+  }
+}
+
 [data-theme="light"] .large-text {
   color: rgba(32, 33, 36, 0.9);
 }
@@ -486,6 +448,7 @@ onMounted(() => {
   grid-template-columns: repeat(5, 1fr);
   gap: 2rem;
   margin-top: 3rem;
+  /* Initial state will be set by GSAP */
 }
 
 .value-card {
@@ -494,9 +457,9 @@ onMounted(() => {
   border-radius: 16px;
   padding: 2rem 1.5rem;
   text-align: center;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-              border-color 0.4s ease;
+  transition: transform 0.3s ease, 
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -577,6 +540,8 @@ onMounted(() => {
   gap: 3rem;
   margin-top: 3rem;
   margin-bottom: 4rem;
+  position: relative;
+  z-index: 1;
 }
 
 .team-leader {
@@ -586,9 +551,9 @@ onMounted(() => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-              border-color 0.4s ease;
+  transition: transform 0.3s ease, 
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
   height: 100%;
   text-align: center;
   padding-top: 0.5rem;
@@ -710,7 +675,12 @@ onMounted(() => {
   flex-wrap: wrap;
   justify-content: center;
   gap: 2.5rem;
+<<<<<<< HEAD
   padding: 0 1rem;
+=======
+  position: relative;
+  z-index: 1;
+>>>>>>> a18be39 (bug fixes)
 }
 
 .team-member {
@@ -720,9 +690,16 @@ onMounted(() => {
   border: 1px solid var(--color-border);
   border-radius: 16px;
   overflow: hidden;
+<<<<<<< HEAD
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), 
               box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
               border-color 0.4s ease;
+=======
+  transition: transform 0.3s ease, 
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+  height: 100%;
+>>>>>>> a18be39 (bug fixes)
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -919,6 +896,17 @@ onMounted(() => {
   
   .team-illustration-wrapper {
     max-width: 300px;
+  }
+  
+  /* Add horizontal padding to section content on mobile */
+  .section-content {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  /* Ensure leadership cards have proper padding */
+  .leader-info {
+    padding: 0.5rem 1.5rem 2rem;
   }
 }
 

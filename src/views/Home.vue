@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <!-- Hero Section -->
-    <section id="hero-section" class="section hero">
+    <section id="hero-section" class="section hero mobile-hero-padding">
       <div class="section-content">
         <div class="hero-split">
           <div class="hero-image-column">

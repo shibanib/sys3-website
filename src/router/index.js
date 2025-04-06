@@ -171,9 +171,12 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
+    // If we have a saved position (e.g., when using browser back/forward)
     if (savedPosition) {
       return savedPosition;
     }
+    
+    // If the route has a hash, scroll to that element
     if (to.hash) {
       // Add a small delay to allow components to mount properly
       return new Promise((resolve) => {
@@ -182,7 +185,15 @@ const router = createRouter({
         }, 300);
       });
     }
-    return { top: 0, behavior: 'smooth' };
+    
+    // For all other routes, force scroll to top with a small delay
+    // This ensures the page scrolls to top even during SPA navigation
+    return new Promise((resolve) => {
+      // Small delay to ensure DOM is updated before scrolling
+      setTimeout(() => {
+        resolve({ top: 0, left: 0, behavior: 'auto' });
+      }, 50);
+    });
   }
 });
 

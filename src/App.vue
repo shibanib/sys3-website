@@ -9,8 +9,13 @@
     
     <main>
       <router-view v-slot="{ Component, route }">
-        <transition name="fade" mode="out-in" @after-enter="handleRouteEnter">
-          <component :is="Component" :key="route.fullPath" />
+        <transition 
+          name="fade" 
+          mode="out-in" 
+          @after-enter="handleRouteEnter"
+          @before-leave="handleRouteLeave"
+        >
+          <component :is="Component" :key="route.path" />
         </transition>
       </router-view>
     </main>
@@ -33,9 +38,32 @@ const isFormPage = computed(() => {
   return route.path.includes('/forms/') || route.path.includes('/coming-soon');
 });
 
+// Pre-navigation action - ensure we properly clean up before the transition
+const handleRouteLeave = () => {
+  console.log('Leaving route:', route.path);
+  
+  // Immediately start scrolling to top
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'auto'
+  });
+  
+  // Reset animation state
+  window.animationsInitialized = false;
+};
+
+// Additional handler during the leave transition
+const handleRouteLeaving = () => {
+  console.log('Component leaving');
+};
+
 // Handle route transitions and ensure animations are properly initialized
 const handleRouteEnter = () => {
   console.log('Route transition completed for:', route.path);
+  
+  // Force scroll to top on route change - immediate and without animation
+  window.scrollTo(0, 0);
   
   // Skip animation for coming soon page to prevent flicker
   if (route.path.includes('/coming-soon')) {
@@ -56,6 +84,14 @@ const handleRouteEnter = () => {
       window.animationsInitialized = true;
     });
   }
+  
+  // Double-check scroll position after a delay to catch any scroll position issues
+  setTimeout(() => {
+    if (window.scrollY > 0) {
+      console.log('Forcing scroll to top after delay');
+      window.scrollTo(0, 0);
+    }
+  }, 100);
 };
 
 const toggleTheme = () => {
@@ -279,7 +315,7 @@ onBeforeUnmount(() => {
 <style>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 .fade-enter-from,
@@ -308,5 +344,20 @@ canvas.webgl {
 .app {
   background: linear-gradient(135deg, var(--color-bg), var(--color-bg-light));
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Ensure proper main content handling */
+main {
+  position: relative;
+  min-height: 70vh; /* Ensure content area has minimum height */
+  width: 100%;
+}
+
+/* Fix for page transitions */
+.fade-enter-active, .fade-leave-active {
+  position: absolute;
+  width: 100%;
 }
 </style>

@@ -282,10 +282,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { courses } from '@/data/courses';
 import { initSectionAnimations, initCardAnimations, initHeroAnimation } from '@/utils/animations';
 import gsap from 'gsap';
+// Import ScrollTrigger for direct manipulation if needed
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // Function to prepare for navigation to the courses page
 const prepareForNavigation = () => {
@@ -306,31 +308,95 @@ const prepareForNavigation = () => {
 // Course tabs state
 const activeTab = ref('high-school');
 
-// Function to handle tab switching
+// Function to handle tab switching with visible, smooth animations
 function switchTab(tab) {
   if (activeTab.value === tab) return; // Don't switch if already on this tab
   
-  // Set active tab
+  console.log(`Switching from ${activeTab.value} to ${tab}`);
+  
+  // Get all grids and find the active one
+  const allGrids = document.querySelectorAll('.courses-preview-grid');
+  let currentGrid = null;
+  let targetGrid = null;
+  
+  // Reliable way to find the grids based on index
+  if (tab === 'high-school') {
+    targetGrid = allGrids[0]; // First grid is high school
+    currentGrid = allGrids[1]; // Second grid is graduate
+  } else {
+    targetGrid = allGrids[1]; // Second grid is graduate
+    currentGrid = allGrids[0]; // First grid is high school
+  }
+  
+  if (!targetGrid || !currentGrid) {
+    console.error('Could not find the grid elements');
+    return;
+  }
+  
+  // Update state
   activeTab.value = tab;
   
-  // Add a small delay to ensure Vue has updated the DOM
-  setTimeout(() => {
-    // Get the newly activated cards
-    const cards = document.querySelectorAll(`.courses-preview-grid.active .course-preview-card`);
-    
-    // Reset any existing animations and set initial state
-    gsap.set(cards, { opacity: 0, y: 30 });
-    
-    // Animate cards with staggered entry
-    gsap.to(cards, {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "power2.out",
-      clearProps: "all"
-    });
-  }, 10);
+  // Kill any existing animations
+  gsap.killTweensOf(currentGrid);
+  gsap.killTweensOf(targetGrid);
+  gsap.killTweensOf('.course-preview-card');
+  
+  // Manually update class - more reliable than GSAP className
+  currentGrid.classList.remove('active');
+  targetGrid.classList.add('active');
+  
+  // Make sure both are properly positioned to start
+  currentGrid.style.visibility = 'visible';
+  currentGrid.style.opacity = '1';
+  currentGrid.style.position = 'relative';
+  currentGrid.style.display = 'grid';
+  
+  targetGrid.style.visibility = 'visible';
+  targetGrid.style.opacity = '0';
+  targetGrid.style.position = 'relative';
+  targetGrid.style.display = 'grid';
+  targetGrid.style.transform = 'translateY(10px)';
+  
+  // Simple fade transition for reliability
+  gsap.to(currentGrid, {
+    opacity: 0,
+    y: -10,
+    duration: 0.3,
+    ease: "power1.out",
+    onComplete: () => {
+      // Ensure it's hidden after animation
+      currentGrid.style.visibility = 'hidden';
+      currentGrid.style.position = 'absolute';
+    }
+  });
+  
+  // Fade in target grid
+  gsap.to(targetGrid, {
+    opacity: 1,
+    y: 0,
+    duration: 0.3,
+    delay: 0.1,
+    ease: "power1.out"
+  });
+  
+  // Animate the cards
+  const cards = targetGrid.querySelectorAll('.course-preview-card');
+  
+  // Reset the cards
+  gsap.set(cards, {
+    opacity: 0,
+    y: 10
+  });
+  
+  // Animate in with stagger
+  gsap.to(cards, {
+    opacity: 1,
+    y: 0,
+    duration: 0.3,
+    stagger: 0.05,
+    delay: 0.2,
+    ease: "power1.out"
+  });
 }
 
 // Get high school courses (first 3 for preview)
@@ -360,6 +426,12 @@ import rlIconLight from '@/assets/images/reinforcement-learning-icon-light.svg';
 import rlIconDark from '@/assets/images/reinforcement-learning-icon-dark.svg';
 import llmopsIconLight from '@/assets/images/llmops-icon-light.svg';
 import llmopsIconDark from '@/assets/images/llmops-icon-dark.svg';
+
+// Import testimonial profile images
+import anshikaProfile from '@/assets/images/people/AnshikaGupta.png';
+import lakshayProfile from '@/assets/images/people/LakshayChawla.png';
+import shibaniProfile from '@/assets/images/people/ShibaniBudhraja.png';
+import ignacioProfile from '@/assets/images/people/IgnacioBecker.png';
 
 // Helper to truncate long descriptions
 function truncateDescription(text, maxLength = 100) {
@@ -406,42 +478,126 @@ const testimonials = [
     author: 'Maya Rodriguez',
     role: 'Data Science Student • Class of 2023',
     content: 'The Data Science course was transformative for my career. The instructors broke down complex concepts into digestible modules, and I was able to build my first ML model within weeks!',
-    authorImg: '@/assets/images/people/AnshikaGupta.png',
+    authorImg: anshikaProfile,
   },
   {
     author: 'James Chen',
     role: 'Computer Vision Student • Class of 2023',
     content: 'I joined with zero coding experience, feeling intimidated. Six months later, I\'ve built my own computer vision application that can identify bird species! The mentorship was exceptional.',
-    authorImg: '@/assets/images/people/LakshayChawla.png',
+    authorImg: lakshayProfile,
   },
   {
     author: 'Sarah Johnson',
     role: 'Machine Learning Student • Class of 2022',
     content: 'The live classes and 24/7 community support made all the difference. I could ask questions anytime and get immediate help. My Machine Learning project got me three job interviews!',
-    authorImg: '@/assets/images/people/ShibaniBudhraja.png',
+    authorImg: shibaniProfile,
   },
   {
     author: 'David Patel',
     role: 'AI Foundations Student • Class of 2023',
     content: 'As a high school student, I never thought I\'d be able to understand neural networks and build AI applications. The curriculum was challenging but incredibly rewarding. Now I\'m helping my school implement AI tools!',
-    authorImg: '@/assets/images/people/IgnacioBecker.png',
+    authorImg: ignacioProfile,
   }
 ];
 
 // Testimonials carousel state
 const activeTestimonial = ref(0);
 const totalTestimonials = testimonials.length;
+const isAnimating = ref(false); // Prevent animation stacking
 
-// Testimonial navigation methods
+// Performance optimization properties
+const testimonialPerformanceProps = {
+  willChange: "transform, opacity",
+  backfaceVisibility: "hidden",
+  force3D: true
+};
+
+// Testimonial navigation methods with optimized animations
 function nextTestimonial() {
-  activeTestimonial.value = (activeTestimonial.value + 1) % totalTestimonials;
+  if (isAnimating.value) return; // Prevent animation stacking
+  isAnimating.value = true;
+  
+  const currentIndex = activeTestimonial.value;
+  const nextIndex = (currentIndex + 1) % totalTestimonials;
+  
+  animateTestimonialChange(currentIndex, nextIndex, 'next');
 }
 
 function prevTestimonial() {
-  activeTestimonial.value = (activeTestimonial.value - 1 + totalTestimonials) % totalTestimonials;
+  if (isAnimating.value) return; // Prevent animation stacking
+  isAnimating.value = true;
+  
+  const currentIndex = activeTestimonial.value;
+  const prevIndex = (currentIndex - 1 + totalTestimonials) % totalTestimonials;
+  
+  animateTestimonialChange(currentIndex, prevIndex, 'prev');
 }
 
-// Helper methods for testimonial carousel
+// Animated testimonial transition
+function animateTestimonialChange(fromIndex, toIndex, direction) {
+  const allCards = document.querySelectorAll('.testimonial-card');
+  if (!allCards.length) {
+    activeTestimonial.value = toIndex;
+    isAnimating.value = false;
+    return;
+  }
+  
+  const currentCard = allCards[fromIndex];
+  const targetCard = allCards[toIndex];
+  
+  // Create animation timeline
+  const tl = gsap.timeline({
+    onComplete: () => {
+      // Update state after animation
+      activeTestimonial.value = toIndex;
+      isAnimating.value = false;
+      
+      // Reset all non-active cards
+      allCards.forEach((card, i) => {
+        if (i !== toIndex) {
+          card.style.visibility = 'hidden';
+        }
+      });
+    }
+  });
+  
+  // Direction-based animation
+  const xOffset = direction === 'next' ? '100%' : '-100%';
+  
+  // Prepare the target card for smooth entrance
+  gsap.set(targetCard, {
+    visibility: 'visible',
+    opacity: 0.6,
+    x: xOffset,
+    rotation: direction === 'next' ? 5 : -5,
+    scale: 0.9,
+    ...testimonialPerformanceProps
+  });
+  
+  // Animate current card out
+  tl.to(currentCard, {
+    opacity: 0,
+    x: direction === 'next' ? '-60%' : '60%',
+    rotation: direction === 'next' ? -5 : 5,
+    scale: 0.9,
+    duration: 0.35,
+    ease: "power2.in",
+    ...testimonialPerformanceProps
+  });
+  
+  // Animate target card in
+  tl.to(targetCard, {
+    opacity: 1,
+    x: '0%',
+    rotation: 0,
+    scale: 1,
+    duration: 0.4,
+    ease: "power2.out",
+    clearProps: "willChange,backfaceVisibility,force3D"
+  }, 0.15); // Slight overlap for smoother transition
+}
+
+// Helper methods for testimonial carousel - used for class application
 function getPrevIndex(index) {
   return (activeTestimonial.value === (index + 1) % totalTestimonials) || 
          (activeTestimonial.value === 0 && index === totalTestimonials - 1);
@@ -451,33 +607,352 @@ function getNextIndex(index) {
   return (activeTestimonial.value === (index - 1 + totalTestimonials) % totalTestimonials);
 }
 
-// Auto-rotate testimonials
+// Auto-rotate testimonials with improved timing
 let testimonialInterval;
 
 function startAutoRotate() {
+  // Use a slightly longer interval for better reading experience
   testimonialInterval = setInterval(() => {
     nextTestimonial();
-  }, 5000);
+  }, 7000); // Slightly longer for better reading experience
 }
 
 function stopAutoRotate() {
   clearInterval(testimonialInterval);
 }
 
+// Reference to event listeners for proper cleanup
+const eventListeners = {
+  carousel: {
+    element: null,
+    listeners: {
+      mouseenter: stopAutoRotate,
+      mouseleave: startAutoRotate
+    }
+  }
+};
+
+// Optimized smooth animation initialization
+function optimizedInitAnimations() {
+  // Kill any existing animations first for a clean slate
+  gsap.killTweensOf("*");
+  ScrollTrigger.getAll().forEach(st => st.kill());
+  
+  // Set a clean performance optimization context
+  gsap.config({
+    force3D: true, // Force hardware acceleration
+    autoSleep: 60,  // Better performance optimization
+    nullTargetWarn: false // Reduce console noise
+  });
+  
+  // Performance props for all animations
+  const performanceProps = {
+    willChange: "transform, opacity",
+    backfaceVisibility: "hidden",
+    force3D: true
+  };
+  
+  // Create a master timeline for coordinated page load animation
+  const masterTl = gsap.timeline({ paused: true });
+  
+  // 1. Hero section - Fast fade in (use custom animation for more control)
+  const heroSection = document.querySelector('#education-hero');
+  const heroContent = heroSection?.querySelector('.hero-content');
+  
+  if (heroContent) {
+    gsap.set(heroContent, { y: 15, opacity: 0, ...performanceProps });
+    
+    masterTl.to(heroContent, {
+      y: 0,
+      opacity: 1,
+      duration: 0.5,
+      ease: "power2.out",
+      clearProps: "willChange,backfaceVisibility"
+    }, 0);
+  }
+  
+  // 2. Pre-animation setup for each section
+  const sections = document.querySelectorAll('.section:not(#education-hero)');
+  
+  sections.forEach(section => {
+    // Prepare headings
+    const heading = section.querySelector('h2');
+    if (heading) gsap.set(heading, { y: 10, opacity: 0, ...performanceProps });
+    
+    // Prepare descriptions
+    const desc = section.querySelector('.section-description');
+    if (desc) gsap.set(desc, { y: 8, opacity: 0, ...performanceProps });
+    
+    // Set up ScrollTrigger for each section
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top 75%',
+      once: true,
+      onEnter: () => {
+        const sectionTl = gsap.timeline();
+        
+        // Animate heading
+        if (heading) {
+          sectionTl.to(heading, {
+            y: 0,
+            opacity: 1,
+            duration: 0.4,
+            ease: "power2.out",
+            clearProps: "willChange,backfaceVisibility"
+          });
+        }
+        
+        // Animate description
+        if (desc) {
+          sectionTl.to(desc, {
+            y: 0,
+            opacity: 1,
+            duration: 0.4,
+            ease: "power2.out",
+            clearProps: "willChange,backfaceVisibility"
+          }, "-=0.25");
+        }
+        
+        // Specialized animations for different section types
+        if (section.id === 'benefits-section') {
+          // Stagger benefit cards with fast, professional animation
+          const cards = section.querySelectorAll('.benefit-card');
+          gsap.set(cards, { y: 15, opacity: 0, ...performanceProps });
+          
+          sectionTl.to(cards, {
+            y: 0,
+            opacity: 1,
+            duration: 0.35,
+            stagger: 0.06,
+            ease: "power2.out",
+            clearProps: "willChange,backfaceVisibility"
+          }, "-=0.2");
+        }
+        
+        if (section.id === 'how-it-works') {
+          // Stagger step items with fast, professional animation
+          const steps = section.querySelectorAll('.step-item');
+          gsap.set(steps, { y: 15, opacity: 0, ...performanceProps });
+          
+          sectionTl.to(steps, {
+            y: 0,
+            opacity: 1,
+            duration: 0.35,
+            stagger: 0.07,
+            ease: "power2.out",
+            clearProps: "willChange,backfaceVisibility"
+          }, "-=0.2");
+        }
+        
+        if (section.id === 'courses-preview') {
+          // Ultra-optimized courses section animation
+          const tabs = section.querySelectorAll('.level-tab');
+          const activeGrid = section.querySelector('.courses-preview-grid.active');
+          const cards = activeGrid?.querySelectorAll('.course-preview-card');
+          
+          // Pre-position tabs with extremely minimal transform
+          gsap.set(tabs, { y: 5, opacity: 0 });
+          
+          // Pre-position the grid - make sure it exists in DOM properly
+          if (activeGrid) {
+            // Ensure proper visibility settings directly
+            activeGrid.style.visibility = 'visible';
+            activeGrid.style.position = 'relative';
+            activeGrid.style.opacity = '0';
+            activeGrid.style.pointerEvents = 'auto';
+          }
+          
+          // Minimal card setup
+          if (cards && cards.length) {
+            gsap.set(cards, { opacity: 0, y: 10 });
+          }
+          
+          // Simplified animation timeline with reduced properties and durations
+          sectionTl.to(tabs, {
+            y: 0,
+            opacity: 1,
+            duration: 0.25, // Faster
+            stagger: 0.05, // Faster stagger
+            ease: "power1.out", // Simpler easing
+            clearProps: "y" // Only clear what's needed
+          });
+          
+          if (activeGrid) {
+            sectionTl.to(activeGrid, {
+              opacity: 1,
+              duration: 0.2, // Super fast fade
+              ease: "none" // Linear is fastest
+            }, "<0.1");
+          }
+          
+          if (cards && cards.length) {
+            // Batch cards in a single efficient operation
+            sectionTl.to(cards, {
+              opacity: 1,
+              y: 0,
+              duration: 0.2, // Faster
+              stagger: 0.03, // Minimal stagger
+              ease: "power1.out", // Simpler easing
+              clearProps: "y" // Only clear what's needed
+            }, "<0.05");
+          }
+        }
+        
+        if (section.id === 'testimonials-section') {
+          // Animate just the active testimonial for better performance
+          const activeCard = section.querySelector('.testimonial-card.active');
+          if (activeCard) {
+            gsap.set(activeCard, { opacity: 0, y: 15, ...performanceProps });
+            
+            sectionTl.to(activeCard, {
+              opacity: 1,
+              y: 0,
+              duration: 0.4,
+              ease: "power2.out",
+              clearProps: "willChange,backfaceVisibility"
+            }, "-=0.2");
+          }
+        }
+        
+        if (section.id === 'education-cta') {
+          // Animate CTA box
+          const ctaBox = section.querySelector('.cta-box');
+          if (ctaBox) {
+            gsap.set(ctaBox, { y: 15, opacity: 0, ...performanceProps });
+            
+            sectionTl.to(ctaBox, {
+              y: 0,
+              opacity: 1,
+              duration: 0.4,
+              ease: "power2.out",
+              clearProps: "willChange,backfaceVisibility"
+            }, "-=0.1");
+          }
+        }
+      }
+    });
+  });
+  
+  // Play the master timeline
+  masterTl.play();
+  
+  // Make visible any elements that might still be hidden
+  // This ensures all content is visible, even if animations don't trigger
+  setTimeout(() => {
+    document.querySelectorAll('.benefits-grid, .steps-container, .courses-preview-grid.active, .testimonial-card.active, .cta-box')
+      .forEach(el => {
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
+      });
+  }, 1000);
+  
+  return masterTl;
+}
+
 onMounted(() => {
-  // Initialize animations
-  initHeroAnimation('#education-hero');
-  initSectionAnimations();
-  initCardAnimations('.benefit-card, .course-preview-card, .step-item');
+  console.log("Education page mounted");
   
-  // Start auto-rotating testimonials
-  startAutoRotate();
+  // Immediate initialization using setTimeout for more reliable DOM access
+  setTimeout(() => {
+    console.log("Setting up initial state");
+    
+    // Get all grids and select by index (most reliable approach)
+    const allGrids = document.querySelectorAll('.courses-preview-grid');
+    
+    if (allGrids.length >= 2) {
+      const highSchoolGrid = allGrids[0]; // First grid is high school
+      const graduateGrid = allGrids[1]; // Second grid is graduate
+      
+      console.log("Found grids:", allGrids.length);
+      
+      // Reset both grids first
+      allGrids.forEach(grid => {
+        grid.classList.remove('active');
+        grid.style.opacity = '0';
+        grid.style.visibility = 'hidden';
+        grid.style.position = 'absolute';
+      });
+      
+      // Apply initial state based on active tab
+      if (activeTab.value === 'high-school') {
+        console.log("Setting high school grid active");
+        
+        // Direct style application (more reliable than GSAP in some cases)
+        highSchoolGrid.classList.add('active');
+        highSchoolGrid.style.visibility = 'visible';
+        highSchoolGrid.style.opacity = '1';
+        highSchoolGrid.style.position = 'relative';
+        highSchoolGrid.style.display = 'grid';
+        highSchoolGrid.style.transform = 'none';
+        
+        // Pre-animate cards if desired
+        const cards = highSchoolGrid.querySelectorAll('.course-preview-card');
+        cards.forEach(card => {
+          card.style.opacity = '1';
+          card.style.transform = 'none';
+        });
+        
+      } else {
+        console.log("Setting graduate grid active");
+        
+        // Direct style application
+        graduateGrid.classList.add('active');
+        graduateGrid.style.visibility = 'visible';
+        graduateGrid.style.opacity = '1';
+        graduateGrid.style.position = 'relative';
+        graduateGrid.style.display = 'grid';
+        graduateGrid.style.transform = 'none';
+        
+        // Pre-animate cards if desired
+        const cards = graduateGrid.querySelectorAll('.course-preview-card');
+        cards.forEach(card => {
+          card.style.opacity = '1';
+          card.style.transform = 'none';
+        });
+      }
+    } else {
+      console.error("Could not find course grid elements");
+    }
+    
+    // Initialize optimized animations
+    optimizedInitAnimations();
+    
+    // Start auto-rotating testimonials
+    startAutoRotate();
+    
+    // Set up event listeners with proper references for cleanup
+    const carousel = document.querySelector('.testimonials-carousel');
+    if (carousel) {
+      carousel.addEventListener('mouseenter', stopAutoRotate);
+      carousel.addEventListener('mouseleave', startAutoRotate);
+      
+      // Store references for cleanup
+      eventListeners.carousel.element = carousel;
+    }
+  }, 100); // Small delay to ensure DOM is ready
+});
+
+// Clean up animations and event listeners when component is unmounted
+onUnmounted(() => {
+  // Clear the auto-rotate interval
+  stopAutoRotate();
   
-  // Stop rotation when user interacts with carousel
-  const carousel = document.querySelector('.testimonials-carousel');
-  if (carousel) {
-    carousel.addEventListener('mouseenter', stopAutoRotate);
-    carousel.addEventListener('mouseleave', startAutoRotate);
+  // Remove event listeners
+  if (eventListeners.carousel.element) {
+    const { element, listeners } = eventListeners.carousel;
+    
+    Object.entries(listeners).forEach(([event, handler]) => {
+      element.removeEventListener(event, handler);
+    });
+  }
+  
+  // Kill all animations related to this page
+  if (gsap) {
+    gsap.killTweensOf("*");
+    
+    if (ScrollTrigger) {
+      ScrollTrigger.getAll().forEach(st => st.kill());
+    }
   }
 });
 </script>
@@ -808,9 +1283,6 @@ onMounted(() => {
 
 .courses-preview-grid {
   display: grid;
-  visibility: hidden;
-  position: absolute;
-  opacity: 0;
   margin-top: 2rem;
   margin-bottom: 2rem;
   grid-template-columns: repeat(3, 1fr);
@@ -818,13 +1290,35 @@ onMounted(() => {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+  /* Better hiding method with autoAlpha compatibility */
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
   pointer-events: none;
+  /* Enhanced performance optimizations */
+  transform: translateZ(0);
+  will-change: transform, opacity; 
+  backface-visibility: hidden;
+  perspective: 1000px;
+  /* Ensure consistent layout */
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+/* Added parent wrapper for better positioning context */
+#courses-preview .section-content {
+  position: relative;
+  min-height: 500px; /* Maintain height during transitions */
 }
 
 @media (max-width: 1200px) {
   .courses-preview-grid {
     grid-template-columns: repeat(2, 1fr);
     max-width: 800px;
+  }
+  #courses-preview .section-content {
+    min-height: 700px; /* Adjusted for 2 columns */
   }
 }
 
@@ -833,13 +1327,17 @@ onMounted(() => {
     grid-template-columns: 1fr;
     max-width: 450px;
   }
+  #courses-preview .section-content {
+    min-height: 1200px; /* Adjusted for 1 column */
+  }
 }
 
 .courses-preview-grid.active {
   visibility: visible;
-  position: relative;
   opacity: 1;
+  position: relative;
   pointer-events: auto;
+  z-index: 2;
 }
 
 .course-preview-card {
@@ -847,18 +1345,25 @@ onMounted(() => {
   border: 1px solid var(--color-border);
   border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-              border-color 0.4s ease;
+  /* Ultra-optimized transitions for smoother hover effects */
+  transition: transform 0.2s ease-out, 
+              box-shadow 0.2s ease-out,
+              border-color 0.2s ease;
   display: flex;
   flex-direction: column;
   min-height: 340px;
+  will-change: transform; /* Hint for browser optimization */
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Prevent flickering */
 }
 
-.course-preview-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(138, 133, 255, 0.1);
-  border-color: var(--color-primary);
+/* Only apply hover effects on non-touch devices */
+@media (hover: hover) {
+  .course-preview-card:hover {
+    transform: translateY(-5px); /* Reduced movement for smoother effect */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 3px 10px rgba(138, 133, 255, 0.1);
+    border-color: var(--color-primary);
+  }
 }
 
 .course-preview-image {
@@ -1541,5 +2046,42 @@ onMounted(() => {
 
 :root .light-theme .dark-mode-icon {
   display: none !important;
+}
+
+/* Force all components to be visible */
+.benefits-grid,
+.steps-container {
+  display: grid !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.benefit-card,
+.step-item {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+  display: flex !important;
+}
+
+.courses-preview-grid.active {
+  visibility: visible !important;
+  position: relative !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  display: grid !important;
+}
+
+.courses-preview-grid.active .course-preview-card {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+}
+
+.testimonial-card.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(0) rotateY(0) scale(1) !important;
+  filter: none !important;
 }
 </style>
