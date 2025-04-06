@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>System3 - Page Redirect</title>
+  <script type="text/javascript">
+    // Single Page App for GitHub Pages
+    // MIT License
+    // Modified version of https://github.com/rafgraph/spa-github-pages
+    // This script takes the current URL and redirects to the proper path
+    // It helps SPAs work with GitHub Pages by handling URL routing
+    
+    (function(l) {
+      // Extract the repo name from the path for GitHub Pages
+      const getRepoName = function() {
+        const pathSegments = l.pathname.split('/');
+        // GitHub Pages URLs have format: username.github.io/reponame/...
+        if (l.hostname.includes('github.io') && pathSegments.length > 1) {
+          return pathSegments[1]; // The repo name is the first segment
+        }
+        // Default fallback
+        return 'System3-Vue';
+      };
+      
+      // Get the repository name
+      const repoName = getRepoName();
+      
+      // Process the URL search parameters
+      if (l.search[1] === '/' ) {
+        var decoded = l.search.slice(1).split('&').map(function(s) { 
+          return s.replace(/~and~/g, '&');
+        }).join('?');
+        window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+        );
+      }
+      
+      // Redirect to the index.html with the URL
+      const redirectURL = l.origin + '/' + repoName + '/index.html' + l.search + l.hash;
+      console.log('Redirecting to:', redirectURL);
+      window.location.href = redirectURL;
+    }(window.location));
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background: #050505;
+      color: #ffffff;
+    }
+    h1 {
+      color: #8a85ff;
+    }
+    a {
+      color: #8a85ff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .redirect-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      border: 1px solid rgba(138, 133, 255, 0.2);
+    }
+    .loader {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(138, 133, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #8a85ff;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="redirect-container">
+    <div class="loader"></div>
+    <h1>Redirecting...</h1>
+    <p>You are being redirected to the requested page.</p>
+    <p>If you are not redirected automatically, <a href="index.html">click here</a>.</p>
+  </div>
+  
+  <script>
+    // Fallback if the redirect doesn't work after 3 seconds
+    setTimeout(function() {
+      const repoName = window.location.pathname.split('/')[1] || 'System3-Vue';
+      window.location.href = window.location.origin + '/' + repoName + '/index.html';
+    }, 3000);
+  </script>
+</body>
+</html>

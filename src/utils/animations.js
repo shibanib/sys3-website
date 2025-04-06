@@ -312,7 +312,15 @@ export const initButtonAnimations = (selector = '.button, .cta-button, .form-but
  */
 export const initPageAnimations = (options = {}) => {
   // Reset any conflicting animations first
-  gsap.killAll(true); // Kill all GSAP animations to prevent conflicts
+  if (gsap.killAll) {
+    gsap.killAll(true); // Kill all GSAP animations if method exists
+  } else {
+    // Fallback to killing tweens and timelines separately
+    gsap.killTweensOf("*");
+    // Kill all active timelines
+    const activeTimelines = gsap.globalTimeline.getChildren();
+    activeTimelines.forEach(timeline => timeline.kill());
+  }
   
   // Clear any previous ScrollTriggers
   if (ScrollTrigger) {

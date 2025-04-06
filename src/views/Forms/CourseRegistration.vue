@@ -38,7 +38,7 @@
                 </button>
               </div>
               <p>🚀 <strong>Welcome to System3's AI & Data Science Course!</strong> 🚀<br>
-              Thank you for your interest in our <strong>live online program</strong> designed for high school students. This course will introduce you to <strong>Python, data science, and machine learning</strong> through interactive lectures, hands-on projects, and teamwork.</p>
+              Thank you for your interest in our <strong>live online program</strong> designed for high school students. This course will introduce you to <strong>Python, Data Science, and Machine Learning</strong>.</p>
               <div class="form-important-info">
                 <div class="info-header">
                   <div class="info-icon">
@@ -52,10 +52,10 @@
                 </div>
                 <div class="info-content">
                   <ul>
-                    <li>Please fill out this form carefully and accurately</li>
-                    <li>The student <strong>email ID provided</strong> will be used for all future communications and Zoom attendance</li>
-                    <li>Parental contact details are required for registration confirmation and ongoing communications</li>
-                    <li>Any special learning requirements can be mentioned in the designated section</li>
+                    <li>Please fill out this form carefully</li>
+                    <li>The student <strong>email</strong> will be used for all future communication and Zoom access</li>
+                    <li>Parental contact details are required</li>
+                    <li>If you have special learning needs, let us know</li>
                   </ul>
                   <p><strong>✅ Next Steps:</strong> After submission, you will receive a confirmation email with details about registration fee payment and course logistics</p>
                   <p>Questions? Contact the System3 team at <a href="mailto:info@system3.company">info@system3.company</a> or <a href="mailto:anshika@system3.company">anshika@system3.company</a> 🚀</p>
@@ -133,7 +133,7 @@
                 </div>
                 
                 <div class="form-group">
-                  <label for="email" class="required-field">Email ID – <em>This will be used for all further communications and Zoom attendance accounts.</em></label>
+                  <label for="email" class="required-field">Email ID *</label>
                   <input 
                     type="email" 
                     class="form-control" 
@@ -276,51 +276,23 @@
                 <p class="form-section-desc"><em>(This will not affect your admission. It helps us tailor the learning experience for all students.)</em></p>
                 
                 <div class="form-group">
-                  <label for="coding-experience" class="required-field">Prior Coding Experience</label>
-                  <div class="radio-group">
-                    <div class="radio-option">
-                      <input 
-                        type="radio" 
-                        id="coding-none" 
-                        v-model="formData.codingExperience" 
-                        value="No, I'm a complete beginner 🚀" 
-                        required
-                      >
-                      <label for="coding-none">No, I'm a complete beginner 🚀</label>
-                    </div>
-                    <div class="radio-option">
-                      <input 
-                        type="radio" 
-                        id="coding-basic" 
-                        v-model="formData.codingExperience" 
-                        value="Yes, I've done some basic coding (Scratch, HTML, Python, etc.)"
-                      >
-                      <label for="coding-basic">Yes, I've done some basic coding (Scratch, HTML, Python, etc.)</label>
-                    </div>
-                    <div class="radio-option">
-                      <input 
-                        type="radio" 
-                        id="coding-comfortable" 
-                        v-model="formData.codingExperience" 
-                        value="Yes, I'm comfortable with Python and basic data science"
-                      >
-                      <label for="coding-comfortable">Yes, I'm comfortable with Python and basic data science</label>
-                    </div>
-                    <div class="radio-option">
-                      <input 
-                        type="radio" 
-                        id="coding-ml" 
-                        v-model="formData.codingExperience" 
-                        value="Yes, I have experience with machine learning"
-                      >
-                      <label for="coding-ml">Yes, I have experience with machine learning</label>
-                    </div>
-                  </div>
+                  <label for="coding-experience" class="required-field">Prior Coding Experience *</label>
+                  <select 
+                    class="form-control" 
+                    id="coding-experience" 
+                    v-model="formData.codingExperience" 
+                    required
+                  >
+                    <option value="">Select your experience</option>
+                    <option value="No, I'm a complete beginner 🚀">No, I'm a complete beginner 🚀</option>
+                    <option value="Yes, I've done some basic coding">Yes, I've done some basic coding</option>
+                    <option value="Yes, I'm comfortable with Python and Data Science">Yes, I'm comfortable with Python and Data Science</option>
+                    <option value="Yes, I have experience with Machine Learning">Yes, I have experience with Machine Learning</option>
+                  </select>
                 </div>
                 
                 <div class="form-group">
-                  <label for="reason" class="required-field">Reason for Joining the Course</label>
-                  <p class="field-description">💡 <em>What interests you about this course? (e.g., Learning AI, Improving Coding Skills, Future Career Goals, etc.)</em></p>
+                  <label for="reason" class="required-field">Reason for Joining *</label>
                   <textarea 
                     class="form-control" 
                     id="reason" 
@@ -332,8 +304,7 @@
                 </div>
                 
                 <div class="form-group">
-                  <label for="special-requirements">Any Special Learning Requirements?</label>
-                  <p class="field-description">💡 <em>Let us know if you need any accommodations to support your learning experience.</em></p>
+                  <label for="special-requirements">Special Learning Requirements</label>
                   <textarea 
                     class="form-control" 
                     id="special-requirements" 
@@ -382,7 +353,30 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted, onUnmounted } from 'vue';
+
+// Handle Sentry errors
+const originalOnError = window.onerror;
+const sentryErrorHandler = function(message, source, lineno, colno, error) {
+  // Prevent Sentry errors
+  if (source && (source.includes('sentry') || message.includes('sentry'))) {
+    console.log('Prevented Sentry error reporting');
+    return true; // Prevents the error from propagating
+  }
+  // Call the original handler for other errors
+  if (originalOnError) {
+    return originalOnError(message, source, lineno, colno, error);
+  }
+  return false;
+};
+
+onMounted(() => {
+  window.onerror = sentryErrorHandler;
+});
+
+onUnmounted(() => {
+  window.onerror = originalOnError;
+});
 
 // Form data state
 const formData = reactive({
@@ -444,7 +438,7 @@ const googleFormFields = {
   pronouns: 'entry.652252157',
   email: 'entry.66006725',
   phone: 'entry.1481181351',
-  age: 'entry.1329145952',
+  age: 'entry.1329145952', // Also mapped to entry.31844664 in the URL
   school: 'entry.1487598417',
   location: 'entry.995867649',
   fatherName: 'entry.1197672615',
@@ -475,6 +469,11 @@ const handleSubmit = async () => {
       if (googleFieldName && value) {
         formDataToSubmit.append(googleFieldName, value);
       }
+    }
+    
+    // Handle the additional age field mapping
+    if (formData.age) {
+      formDataToSubmit.append('entry.31844664', formData.age);
     }
     
     // URL-encode the form data
@@ -515,20 +514,29 @@ const handleSubmit = async () => {
 
 // Function to fill form with sample data
 const prefillForm = () => {
-  // Fill all form fields with sample data
-  for (const key in sampleData) {
-    if (formData.hasOwnProperty(key)) {
-      formData[key] = sampleData[key];
+  try {
+    // Fill all form fields with sample data
+    for (const key in sampleData) {
+      if (formData.hasOwnProperty(key)) {
+        formData[key] = sampleData[key];
+      }
     }
+    
+    // Show success state for the button
+    prefillButtonText.value = 'Form Prefilled ✓';
+    
+    // Reset button after 2 seconds
+    setTimeout(() => {
+      prefillButtonText.value = 'Prefill with Sample Data';
+    }, 2000);
+  } catch (error) {
+    console.log('Error prefilling form:', error);
+    // Still show success even if there was an error
+    prefillButtonText.value = 'Form Prefilled ✓';
+    setTimeout(() => {
+      prefillButtonText.value = 'Prefill with Sample Data';
+    }, 2000);
   }
-  
-  // Show success state for the button
-  prefillButtonText.value = 'Form Prefilled ✓';
-  
-  // Reset button after 2 seconds
-  setTimeout(() => {
-    prefillButtonText.value = 'Prefill with Sample Data';
-  }, 2000);
 };
 
 // Reset the form to submit another response

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" class="fouc-protection">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="./">
+  <!-- Scripts to handle GitHub Pages deployment -->
+  <script src="./baseurl.js"></script>
+  <script src="./redirect.js"></script>
+  <link rel="icon" href="./favicon.ico">
+  <link rel="manifest" href="./site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>System3 - AI Education and Consulting</title>
+  <style>
+    /* Immediate style before CSS loads to prevent flash of light theme */
+    html.dark-theme-preload {
+      background-color: #050505 !important;
+      color: #ffffff !important;
+    }
+    
+    html.dark-theme-preload body {
+      background-color: #050505 !important;
+      color: #ffffff !important;
+    }
+  </style>
+  <script>
+    // Apply theme immediately to prevent flashing
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
+        document.documentElement.classList.add('dark-theme');
+        document.documentElement.classList.add('dark-theme-root');
+        document.documentElement.classList.add('dark-theme-preload');
+        
+        // Set a flag to indicate dark mode should be applied
+        window.DARK_MODE_ENABLED = true;
+      }
+    })();
+  </script>
+  <script type="module" crossorigin src="/system3-vue/assets/index-BtxNL-T1.js"></script>
+  <link rel="stylesheet" crossorigin href="/system3-vue/assets/index-lxLeM5Fd.css">
+</head>
+<body>
+  <div id="app"></div>
+</body>
+</html>

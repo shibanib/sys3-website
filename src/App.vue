@@ -2,7 +2,7 @@
   <div class="app" :class="{ 'dark-theme': isDarkTheme }">
     <TheHeader />
     
-    <div class="scroll-indicator" :class="{ 'visible': showScrollIndicator }">
+    <div class="scroll-indicator" :class="{ 'visible': showScrollIndicator && !isFormPage }">
       <div class="scroll-line"></div>
       <p>Explore</p>
     </div>
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, provide, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, provide, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import TheHeader from '@/components/TheHeader.vue';
 import TheFooter from '@/components/TheFooter.vue';
@@ -27,6 +27,11 @@ import TheFooter from '@/components/TheFooter.vue';
 const isDarkTheme = ref(false);
 const showScrollIndicator = ref(false);
 const route = useRoute();
+
+// Check if current page is a form page to hide the explore indicator
+const isFormPage = computed(() => {
+  return route.path.includes('/forms/');
+});
 
 // Handle route transitions and ensure animations are properly initialized
 const handleRouteEnter = () => {

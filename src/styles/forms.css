@@ -564,7 +564,6 @@ textarea.form-control {
   padding: 8rem 0 6rem;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(5, 5, 5, 0.95), rgba(15, 15, 15, 0.9)), url('/data-science-hero.jpg');
   background-size: cover;
   background-position: center;
   margin: 0;
