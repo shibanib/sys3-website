@@ -675,12 +675,8 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
   justify-content: center;
   gap: 2.5rem;
-<<<<<<< HEAD
-  padding: 0 1rem;
-=======
   position: relative;
   z-index: 1;
->>>>>>> a18be39 (bug fixes)
 }
 
 .team-member {
@@ -690,16 +686,10 @@ onBeforeUnmount(() => {
   border: 1px solid var(--color-border);
   border-radius: 16px;
   overflow: hidden;
-<<<<<<< HEAD
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-              border-color 0.4s ease;
-=======
   transition: transform 0.3s ease, 
               box-shadow 0.3s ease,
               border-color 0.3s ease;
   height: 100%;
->>>>>>> a18be39 (bug fixes)
   display: flex;
   flex-direction: column;
   text-align: center;
