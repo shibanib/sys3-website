@@ -3,8 +3,8 @@
 export const courses = [
   {
     id: 'data-science',
-    title: 'Data Science',
-    shortTitle: 'Data Science',
+    title: 'Bedrock Data Science',
+    shortTitle: 'Bedrock Data Science',
     description: 'Master the fundamentals and advanced concepts of data science, including statistical analysis, machine learning, and data visualization.',
     image: '/course-data-science.jpg',
     icon: 'data-science-icon.svg',

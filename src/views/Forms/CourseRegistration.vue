@@ -33,9 +33,9 @@
               </div>
               <div class="form-title-row">
                 <h1>System3 AI X TIS Course Registration – July 2025 (Indian Cohort)</h1>
-                <button id="prefill-form-btn" class="prefill-button" type="button" @click="prefillForm">
+                <!-- <button id="prefill-form-btn" class="prefill-button" type="button" @click="prefillForm">
                   {{ prefillButtonText }}
-                </button>
+                </button> -->
               </div>
               <p>🚀 <strong>Welcome to System3's AI & Data Science Course!</strong> 🚀<br>
               Thank you for your interest in our <strong>live online program</strong> designed for high school students. This course will introduce you to <strong>Python, Data Science, and Machine Learning</strong>.</p>
