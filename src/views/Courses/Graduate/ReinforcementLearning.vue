@@ -101,7 +101,7 @@ const instructors = [
   },
   {
     name: "Dr. Ignacio Becker",
-    role: "RL Research Scientist",
+    role: "Head of System3 Consulting",
     bio: "Researcher in reinforcement learning with expertise in practical applications of RL algorithms. Specializes in deep reinforcement learning and multi-agent systems for complex decision-making problems.",
     imagePath: ignacioImage,
     website: "#"

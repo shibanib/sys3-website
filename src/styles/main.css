@@ -25,6 +25,16 @@ html.fouc-protection {
   margin-top: 3rem;
 }
 
+/* Text display for responsive buttons */
+.mobile-text {
+  display: none;
+}
+
+.desktop-text {
+  display: inline;
+}
+
+
 @media (max-width: 768px) {
   .education-cta, .consulting-cta {
     margin-top: 2rem;
@@ -34,6 +44,20 @@ html.fouc-protection {
     padding: 0.75rem 1.25rem; /* Slightly smaller padding on mobile */
     font-size: 0.8rem; /* Smaller font size */
     letter-spacing: 0.5px; /* Less letter spacing */
+  }
+  
+  .mobile-text {
+    display: inline;
+  }
+  
+  .desktop-text {
+    display: none;
+  }
+  
+  
+  .education-cta .cta-button,
+  .consulting-cta .cta-button {
+    white-space: nowrap;
   }
 }
 
@@ -408,6 +432,12 @@ html.dark-theme .app {
   pointer-events: none;
 }
 
+@media (max-width: 768px) {
+  .scroll-indicator {
+    display: none !important;
+  }
+}
+
 .scroll-indicator.visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
@@ -583,6 +613,7 @@ header {
   position: relative;
   z-index: 2000;
   pointer-events: auto !important;
+  height: 100%;
 }
 
 .logo a {
@@ -740,7 +771,7 @@ nav li.has-dropdown:hover .dropdown-menu {
 .menu-toggle {
   display: none;
   cursor: pointer;
-  width: 30px;
+  width: 24px;
   height: 24px;
   position: relative;
   z-index: 1002;
@@ -748,18 +779,26 @@ nav li.has-dropdown:hover .dropdown-menu {
 
 .menu-toggle span {
   display: block;
-  width: 24px;
+  width: 22px;
   height: 2px;
   background-color: var(--color-text);
-  margin: 6px 0;
+  margin: 5px 0;
   transition: var(--transition-fast);
+  border-radius: 1px;
 }
 
 /* Theme Toggle Button */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  height: 100%;
+}
+
 .theme-toggle-wrapper {
   display: flex;
   align-items: center;
-  margin-left: 2rem;
+  margin-left: 0;
 }
 
 .theme-label {
@@ -772,7 +811,7 @@ nav li.has-dropdown:hover .dropdown-menu {
 
 .theme-toggle {
   position: relative;
-  width: 48px;
+  width: 46px;
   height: 24px;
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 24px;
@@ -783,12 +822,14 @@ nav li.has-dropdown:hover .dropdown-menu {
   transition: all var(--transition-fast);
   border: 1px solid var(--color-border);
   z-index: 1002;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .theme-toggle::before {
   content: '';
   position: absolute;
   left: 2px;
+  top: 1px;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -1076,11 +1117,13 @@ a:hover, button:hover {
 .hero {
   position: relative;
   overflow: hidden;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   transform-style: preserve-3d;
+  padding-bottom: 2rem;
 }
 
 .hero-content {
@@ -1119,12 +1162,39 @@ a:hover, button:hover {
 }
 
 @media (max-width: 768px) {
+  .hero-split {
+    flex-direction: column-reverse;
+    gap: 1rem;
+  }
+  
   .hero-text-column {
     padding: 0 1rem;
+    order: 2;
+  }
+  
+  .hero-image-column {
+    order: 1;
+    margin-top: var(--header-height);
   }
   
   .mobile-hero-padding {
-    padding-top: calc(var(--header-height) + 2rem); /* Add extra padding on mobile to prevent header overlap */
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    min-height: 100vh; /* Ensure hero takes up full viewport height */
+  }
+  
+  .hero {
+    min-height: 100vh; /* Ensure consistent height on mobile */
+    height: auto; /* Allow for content expansion */
+  }
+  
+  .hero-illustration-container {
+    margin-top: 1rem;
+    width: 100%;
+  }
+  
+  .hero-illustration {
+    max-width: 85%; /* Ensure illustration is contained */
   }
 }
 
@@ -1166,6 +1236,8 @@ a:hover, button:hover {
   justify-content: center;
   max-width: 100%;
   transition: transform 0.5s ease;
+  position: relative;
+  z-index: 5;
 }
 
 .hero-illustration {
@@ -1173,6 +1245,7 @@ a:hover, button:hover {
   width: 100%;
   height: auto;
   animation: floatingAnimation 6s ease-in-out infinite;
+  position: relative;
 }
 
 @media (max-width: 992px) {
@@ -1181,9 +1254,25 @@ a:hover, button:hover {
   }
 }
 
+@media (max-width: 768px) {
+  .hero-illustration {
+    max-width: 380px;
+    margin: 0 auto; /* Center the illustration */
+  }
+}
+
 @media (max-width: 480px) {
   .hero-illustration {
-    max-width: 300px;
+    max-width: 250px;
+    margin: 0 auto;
+  }
+  
+  .mobile-hero-padding {
+    padding-top: 0;
+  }
+  
+  .hero-image-column {
+    margin-top: calc(var(--header-height) + 0.5rem);
   }
 }
 
@@ -1991,7 +2080,10 @@ footer {
   }
   
   .menu-toggle {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   
   nav {
@@ -2033,9 +2125,9 @@ footer {
   
   .theme-toggle-wrapper {
     margin-left: 1rem;
-    position: fixed;
-    top: 1.25rem;
-    right: 4rem;
+    position: relative;
+    display: flex;
+    align-items: center;
     z-index: 1001;
   }
   
@@ -2111,21 +2203,27 @@ footer {
   }
   
   .theme-toggle-wrapper {
-    margin-left: 1rem;
+    margin-left: 0;
   }
   
   .theme-toggle {
-    width: 36px;
-    height: 20px;
+    width: 42px;
+    height: 22px;
   }
   
   .theme-toggle::before {
     width: 16px;
     height: 16px;
+    top: 2px;
   }
   
   .dark-theme .theme-toggle::before {
-    transform: translateX(16px);
+    transform: translateX(20px);
+  }
+  
+  header {
+    padding: 0 1.25rem;
+    height: 65px;
   }
   
   .education-card,

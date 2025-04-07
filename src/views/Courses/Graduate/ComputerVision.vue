@@ -134,7 +134,7 @@ const instructors = [
   },
   {
     name: "Dr. Ignacio Becker",
-    role: "Vision Research Scientist",
+    role: "Head of System3 Consulting",
     bio: "Leading researcher in advanced computer vision with publications in CVPR, ICCV, and ECCV. Previously led computer vision teams at major research labs, specializing in 3D vision and neural rendering.",
     imagePath: ignacioImage,
     website: "#"

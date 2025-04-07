@@ -174,7 +174,7 @@ const instructors = [
   },
   {
     name: "Dr. Ignacio Becker",
-    role: "Director of AI Research",
+    role: "Head of System3 Consulting",
     bio: "Specializes in deep learning architectures for computer vision and multimodal learning. Has contributed to fundamental advances in representation learning and neural architecture design.",
     imagePath: ignacioImage,
     website: "#"

@@ -31,29 +31,32 @@
           
           <div class="overview-grid">
             <div class="overview-text">
-              <p><strong>{{ overviewTitle }}</strong> {{ overviewParagraph1 }}</p>
+              <h3>{{ overviewTitle }}</h3>
+              <p>{{ overviewParagraph1 }}</p>
               
               <p>{{ overviewParagraph2 }}</p>
               
               <p>{{ overviewParagraph3 }}</p>
             </div>
             
-            <div class="overview-stats">
-              <div class="stat-item">
-                <div class="stat-number">{{ weeksDuration }}</div>
-                <div class="stat-label">Weeks</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-number">{{ hoursDuration }}</div>
-                <div class="stat-label">Hours</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-number">{{ projectsCount }}</div>
-                <div class="stat-label">Projects</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">Support</div>
+            <div class="overview-stats-container">
+              <div class="overview-stats">
+                <div class="stat-item">
+                  <div class="stat-number">{{ weeksDuration }}</div>
+                  <div class="stat-label">Weeks</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-number">{{ hoursDuration }}</div>
+                  <div class="stat-label">Hours</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-number">{{ projectsCount }}</div>
+                  <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-number">24/7</div>
+                  <div class="stat-label">Support</div>
+                </div>
               </div>
             </div>
           </div>

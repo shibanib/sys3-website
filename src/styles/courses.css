@@ -189,12 +189,7 @@
   color: var(--color-primary);
 }
 
-.course-section p {
-  /* margin-bottom: 1.5rem;
-  color: var(--color-text-secondary);
-  line-height: 1.8;
-  font-size: 1.05rem; */
-
+.course-section > .course-section-content > p {
   max-width: 800px;
   margin: 0 auto 2rem;
   text-align: center;
@@ -209,33 +204,64 @@
 
 .overview-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 60% 40%;
   gap: 3rem;
   align-items: center;
+  min-height: 450px;
 }
 
 .overview-text {
   padding-right: 2rem;
 }
 
+.overview-text p {
+  text-align: left;
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.overview-stats-container {
+  position: sticky;
+  top: calc(var(--header-height) + 80px);
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
 .overview-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  margin-bottom: 2rem;
+  max-width: 400px;
+  justify-self: center;
 }
 
 .stat-item {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border-color: var(--color-primary);
 }
 
 .stat-number {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary, var(--color-primary)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   margin-bottom: 0.5rem;
 }
 
@@ -244,6 +270,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--color-text-secondary);
+  font-weight: 500;
 }
 
 /* How It Works Section */
@@ -809,10 +836,17 @@
   .overview-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
+    min-height: auto;
   }
   
   .overview-text {
     padding-right: 0;
+  }
+  
+  .overview-stats-container {
+    position: static;
+    margin-top: 2rem;
+    height: auto;
   }
   
   .course-nav-inner {

@@ -40,9 +40,10 @@
               </svg>
             </div>
             <h3>Location</h3>
-            <p>Harvard University</p>
-            <p>Cambridge, MA 02138</p>
-            <p>United States</p>
+            <p>System3</p>
+            <p>Ethnegersias 4, 2406
+              Egkomi</p>
+            <p>Nicosia, Cyprus</p>
           </div>
           
           <div class="contact-card">

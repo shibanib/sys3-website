@@ -152,7 +152,7 @@ const instructors = [
   },
   {
     name: "Dr. Ignacio Becker",
-    role: "Director of Data Science",
+    role: "Head of System3 Consulting",
     bio: "Specializes in statistical modeling and advanced data analysis techniques. Teaches graduate-level courses on mathematical methods for data science and advanced programming concepts.",
     imagePath: ignacioImage,
     website: "#"

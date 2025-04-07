@@ -126,7 +126,7 @@ const instructors = [
   },
   {
     name: "Dr. Ignacio Becker",
-    role: "NLP Research Scientist",
+    role: "Head of System3 Consulting",
     bio: "Leading researcher in natural language processing with deep expertise in transformer architectures and advanced text processing systems. Specializes in combining NLP with other modalities for multimodal learning.",
     imagePath: ignacioImage,
     website: "#"

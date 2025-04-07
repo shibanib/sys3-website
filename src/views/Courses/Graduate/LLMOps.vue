@@ -205,7 +205,7 @@ const instructors = [
   },
   {
     name: "Dr. Ignacio Becker",
-    role: "LLMOps Specialist",
+    role: "Head of System3 Consulting",
     bio: "Expert in deploying and optimizing large language models in production environments. Specializes in infrastructure for AI systems and the operational aspects of maintaining efficient, scalable LLM systems.",
     imagePath: ignacioImage,
     website: "#"

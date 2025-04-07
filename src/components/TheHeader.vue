@@ -31,11 +31,6 @@
     </nav>
     
     <div class="header-actions">
-      <div class="menu-toggle" :class="{ active: isMenuOpen }" @click="toggleMenu">
-        <span></span>
-        <span></span>
-      </div>
-      
       <div class="theme-toggle-wrapper">
         <span class="theme-label">Theme</span>
         <div class="theme-toggle" @click="toggleTheme">
@@ -46,6 +41,11 @@
             <path fill="none" stroke="currentColor" stroke-width="2" d="M12 3a9 9 0 1 0 9 9c0-4.97-4.03-9-9-9zm0 0V1m0 22v-2m10-10h2M1 12h2m17-7l-2 2M6 6L4 4m14 14l2 2m-16-2l-2 2"></path>
           </svg>
         </div>
+      </div>
+      
+      <div class="menu-toggle" :class="{ active: isMenuOpen }" @click="toggleMenu">
+        <span></span>
+        <span></span>
       </div>
     </div>
   </header>

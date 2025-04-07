@@ -2,6 +2,7 @@
   <div class="app" :class="{ 'dark-theme': isDarkTheme }">
     <TheHeader />
     
+    <!-- Scroll indicator (hidden on mobile) -->
     <div class="scroll-indicator" :class="{ 'visible': showScrollIndicator && !isFormPage }">
       <div class="scroll-line"></div>
       <p>Explore</p>

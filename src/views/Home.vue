@@ -70,7 +70,10 @@
         </div>
         
         <div class="education-cta">
-          <RouterLink to="/education" class="cta-button primary">Explore Our Educational Programs</RouterLink>
+          <RouterLink to="/education" class="cta-button primary">
+            <span class="desktop-text">Explore Our Educational Programs</span>
+            <span class="mobile-text">Educational Programs</span>
+          </RouterLink>
         </div>
       </div>
     </section>
@@ -122,7 +125,10 @@
         </div>
         
         <div class="consulting-cta">
-          <RouterLink to="/consultancy" class="cta-button primary">Explore Our Consultancy Services</RouterLink>
+          <RouterLink to="/consultancy" class="cta-button primary">
+            <span class="desktop-text">Explore Our Consultancy Services</span>
+            <span class="mobile-text">Consultancy Services</span>
+          </RouterLink>
         </div>
       </div>
     </section>
@@ -193,7 +199,7 @@
             <p>Connect with our experts to explore how our AI education and consulting services can drive your organization forward. We're here to guide your journey from start to finish.</p>
             <div class="contact-info">
               <p><strong>Email:</strong> <a href="mailto:info@system3.company">info@system3.company</a></p>
-              <p><strong>Location:</strong> Harvard University, Cambridge, MA</p>
+              <p><strong>Location:</strong> Ethnegersias 4, 2406 Egkomi, Nicosia</p>
             </div>
           </div>
           <div class="contact-action">

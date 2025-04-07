@@ -240,7 +240,7 @@ const teamLeaders = ref([
 const teamMembers = ref([
   {
     name: "Vishnu M",
-    title: "CTO",
+    title: "Chief Technical Officer",
     image: vishnuImage,
     imagePos: "top",
     socialLinks: [
